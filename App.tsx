@@ -1,9 +1,7 @@
-import { SafeAreaView, Text } from 'react-native';
+import AppNavigation from './src/navigation';
 
 export default function App() {
   return (
-    <SafeAreaView>
-      <Text>AI Generation App</Text>
-    </SafeAreaView>
+    <AppNavigation />
   );
 }
