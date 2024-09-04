@@ -22,7 +22,7 @@ function Welcome() {
         </Text>
       </View>
         <View className='flex-row justify-center'>
-          <Image source={require('../../assets/images/welcome2.png')} style={{ width: wp(75), height: wp(75) }}/>
+          <Image source={require('../../assets/images/welcome.png')} style={{ width: wp(75), height: wp(75) }}/>
         </View>
       <TouchableOpacity onPress={handleGetStarted} className='bg-emerald-600 mx-5 p-4 rounded-2xl'>
         <Text style={{ fontSize: wp(6) }} className='text-center font-bold text-white'>Get Started</Text>
