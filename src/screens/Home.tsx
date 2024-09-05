@@ -1,20 +1,46 @@
-import React, { useState } from 'react';
+import Voice, { SpeechResultsEvent } from '@react-native-voice/voice';
+import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Features from '../components/Features';
 import { dummyMessages } from '../constants';
 
 function Home() {
+  // const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [messages, setMessages] = useState(dummyMessages);
-  const [recording, setRecording] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleRecording = () => {
-    setRecording(!recording);
+  useEffect(() => {
+    Voice.onSpeechResults = onSpeechResults;
+  }, []);
+
+  const onSpeechResults = ({ value }: SpeechResultsEvent) => {
+    console.log('onSpeechResults', value);
+    const message = value ?? [];
+    setSearchQuery(message.join().replace(',', ' '));
   }
 
-  const handleClear = () => {}
+  const handleRecording = async () => {
+    try {
+      if(isSpeaking) {
+        await Voice.stop();
+        setIsSpeaking(false);
+      } else {
+        setSearchQuery('');
+        await Voice.start('pt-BR');
+        setIsSpeaking(true);
+      }
+    } catch (error) {
+      console.log('Error', error);
+    }
+  }
 
-  const handleStop = () => {}
+  const handleClear = () => {
+    setMessages([]);
+  }
+
+  const handleStop = async () => {}
 
   return (
     <View className='flex-1 bg-white'>
@@ -62,6 +88,11 @@ function Home() {
                       }
                     })
                   }
+                  <View className='flex-row justify-end'>
+                    <View style={{width: wp(70)}} className='bg-white rounded-xl p-2 rounded-tr-none'>
+                      <Text>{searchQuery}</Text>
+                    </View>
+                  </View>
                 </ScrollView>
               </View>
             </View>
@@ -75,8 +106,8 @@ function Home() {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleRecording}>
-            <View className={`rounded-full p-2 ${recording ? 'bg-red-200' : 'bg-emerald-200'}`}>
-              <View className={`bg-emerald-700 rounded-full p-2 ${recording ? 'bg-red-700' : 'bg-emerald-700'}`}>
+            <View className={`rounded-full p-2 ${isSpeaking ? 'bg-red-200' : 'bg-emerald-200'}`}>
+              <View className={`bg-emerald-700 rounded-full p-2 ${isSpeaking ? 'bg-red-700' : 'bg-emerald-700'}`}>
                 <Image source={require('../../assets/images/recording_icon.png')} style={{width: hp(5), height: hp(5)}}/>
               </View>
             </View>
